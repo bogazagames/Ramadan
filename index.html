@@ -1,522 +1,0 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5,user-scalable=yes">
-<meta name="theme-color" content="#f0b429">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="الصائم الصغير">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="application-name" content="الصائم الصغير">
-<title>مغامرة الصائم الصغير 🌙</title>
-<link rel="manifest" href="./manifest.webmanifest">
-<link rel="icon" href="./icon-192.png" type="image/png">
-<link rel="apple-touch-icon" href="./apple-touch-icon.png">
-<link rel="apple-touch-icon" sizes="192x192" href="./icon-192.png">
-<link rel="apple-touch-icon" sizes="512x512" href="./icon-512.png">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./styles.css">
-</head>
-<body data-theme="night">
-<div id="sync-indicator">🔄 تحديث...</div>
-<div id="app">
-
-<!-- ===== WELCOME ===== -->
-<!-- ===== LANDING (Role Selection) ===== -->
-<div id="screen-welcome" class="screen active">
-  <div class="welcome-wrap" style="gap:14px">
-    <div class="welcome-moon">🌙</div>
-    <h1 class="welcome-title">مغامرة<br>الصائم الصغير</h1>
-    <p class="welcome-sub">رمضان مبارك 1447 هـ 🤲</p>
-
-    <!-- WHO ARE YOU? -->
-    <div style="width:100%;max-width:320px">
-      <p class="bold text-center mb-8" style="font-size:1.05rem">من أنت؟</p>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
-
-        <!-- KID CARD -->
-        <button id="btn-role-kid" style="background:linear-gradient(145deg,rgba(240,180,41,0.18),rgba(240,180,41,0.05));border:2px solid var(--accent);border-radius:18px;padding:22px 10px;cursor:pointer;font-family:var(--font);transition:transform .15s,box-shadow .15s;display:flex;flex-direction:column;align-items:center;gap:8px" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
-          <span style="font-size:3rem">🧒</span>
-          <span class="bold" style="font-size:1rem;color:var(--accent)">أنا طفل</span>
-          <span class="text-xs text-muted">العب وتنافس!</span>
-        </button>
-
-        <!-- PARENT CARD -->
-        <button id="btn-role-parent" style="background:linear-gradient(145deg,rgba(56,201,176,0.18),rgba(56,201,176,0.05));border:2px solid var(--teal);border-radius:18px;padding:22px 10px;cursor:pointer;font-family:var(--font);transition:transform .15s,box-shadow .15s;display:flex;flex-direction:column;align-items:center;gap:8px" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
-          <span style="font-size:3rem">👨‍👩‍👧</span>
-          <span class="bold" style="font-size:1rem;color:var(--teal)">أنا وليّ أمر</span>
-          <span class="text-xs text-muted">تابع أطفالك</span>
-        </button>
-
-      </div>
-
-      <!-- existing kids (shown when profiles exist) -->
-      <div id="existing-profiles" style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px"></div>
-
-      <button class="btn btn-ghost btn-block btn-sm" id="btn-welcome-theme" style="margin-bottom:6px">🎨 اختر المظهر</button>
-<div id="install-bar-welcome" class="install-bar hidden" style="margin-top:10px">
-        <span style="font-size:1.6rem">📲</span>
-        <div style="flex:1"><div class="bold text-sm">ثبّت التطبيق على جهازك</div><div class="text-xs text-muted">يعمل بدون إنترنت!</div></div>
-        <button class="btn btn-primary btn-sm" id="btn-install">تثبيت</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ===== SETUP ===== -->
-<div id="screen-setup" class="screen">
-  <div class="flex gap-8 mb-12">
-    <button class="btn btn-ghost btn-sm" id="btn-back-welcome">← رجوع</button>
-    <div style="flex:1;text-align:center" class="bold text-accent">إنشاء ملفك 🌟</div>
-  </div>
-  <!-- Step 0 -->
-  <div class="setup-step active" data-step="0">
-    <div class="step-hdr"><div class="step-icon">👋</div><h2>أهلاً بك!</h2><p class="text-muted text-sm">أخبرنا عنك</p></div>
-    <div class="flex-col gap-12">
-      <div><label class="bold text-sm">اسمك</label><input type="text" id="s-name" placeholder="اكتب اسمك هنا..." maxlength="30" autocomplete="off" style="margin-top:5px"></div>
-      <div><label class="bold text-sm">عمرك</label><input type="number" id="s-age" placeholder="عمرك..." min="3" max="16" value="8" style="margin-top:5px"></div>
-      <div><label class="bold text-sm">رمز العائلة (اختياري)</label><input type="text" id="s-family-code" placeholder="مثال: ABC123" maxlength="20" autocomplete="off" style="margin-top:5px;text-transform:uppercase"></div>
-    </div>
-    <button class="btn btn-primary btn-lg btn-block mt-16" id="btn-s0">التالي ←</button>
-  </div>
-  <!-- Step 1 -->
-  <div class="setup-step" data-step="1">
-    <div class="step-hdr"><div class="step-icon">🎭</div><h2>اختر صورتك</h2></div>
-    <div class="avatar-tabs" id="av-tabs"></div>
-    <div class="avatar-grid" id="av-grid"></div>
-    <div style="margin-top:12px"><div class="bold text-sm mb-8">اللون المفضل</div><div class="color-grid" id="col-grid"></div></div>
-    <button class="btn btn-primary btn-lg btn-block mt-16" id="btn-s1">التالي ←</button>
-  </div>
-  <!-- Step 2 -->
-  <div class="setup-step" data-step="2">
-    <div class="step-hdr"><div class="step-icon">⭐</div><h2>اختر شخصيتك</h2></div>
-    <div class="hero-grid" id="hero-grid"></div>
-    <button class="btn btn-primary btn-lg btn-block mt-16" id="btn-s2">التالي ←</button>
-  </div>
-  <!-- Step 3 -->
-  <div class="setup-step" data-step="3">
-    <div class="step-hdr"><div class="step-icon">⚡</div><h2>مستوى التحدي</h2></div>
-    <div class="diff-grid">
-      <div class="diff-btn selected" data-d="easy"><div style="font-size:1.8rem">🌸</div><div class="bold">سهل</div><div class="text-xs text-muted">للمبتدئين</div></div>
-      <div class="diff-btn" data-d="normal"><div style="font-size:1.8rem">⭐</div><div class="bold">عادي</div><div class="text-xs text-muted">للشجعان</div></div>
-      <div class="diff-btn" data-d="hero"><div style="font-size:1.8rem">🏆</div><div class="bold">بطل</div><div class="text-xs text-muted">للأبطال!</div></div>
-    </div>
-    <button class="btn btn-primary btn-lg btn-block mt-16" id="btn-s3">التالي ←</button>
-  </div>
-  <!-- Step 4 -->
-  <div class="setup-step" data-step="4">
-    <div class="step-hdr"><div class="step-icon">🗓️</div><h2>خطتك لرمضان</h2><p class="text-muted text-sm">المجموع لا يتجاوز 30 يوماً</p></div>
-    <div class="flex-col gap-10">
-      <div class="card"><div class="slider-lbl"><span>🕛 أيام الظهر</span><span class="slider-val" id="lbl-d">15 يوم</span></div><input type="range" id="sl-d" min="0" max="30" value="15"></div>
-      <div class="card"><div class="slider-lbl"><span>🕒 أيام العصر</span><span class="slider-val" id="lbl-a">10 يوم</span></div><input type="range" id="sl-a" min="0" max="30" value="10"></div>
-      <div class="card"><div class="slider-lbl"><span>🌅 أيام المغرب</span><span class="slider-val" id="lbl-m">5 يوم</span></div><input type="range" id="sl-m" min="0" max="30" value="5"></div>
-    </div>
-    <div class="total-info" id="total-info">✅ المجموع: 30 يوماً</div>
-    <button class="btn btn-primary btn-lg btn-block mt-16" id="btn-s4">🎉 ابدأ رمضان!</button>
-  </div>
-</div>
-
-<!-- ===== HOME ===== -->
-<div id="screen-home" class="screen">
-  <div class="home-hdr">
-    <div class="home-av" id="h-av">🌙</div>
-    <div style="flex:1;min-width:0">
-      <div class="home-greet" id="h-greet">رمضان مبارك</div>
-      <div class="home-name" id="h-name">المغامر</div>
-    </div>
-    <div class="day-badge" id="h-day">يوم 1</div>
-  </div>
-  <div id="notif-bar" class="notif-bar hidden"><span style="font-size:1.3rem">🔔</span><span style="flex:1;font-size:0.83rem">فعّل التنبيهات لتذكيرك بوقت الإفطار!</span><button class="btn btn-secondary btn-sm" id="btn-notif">فعّل</button></div>
-  <div id="status-card" class="status-card status-pending"></div>
-  <div class="timer-card">
-    <div class="timer-lbl">العد التنازلي حتى</div>
-    <div class="timer-name" id="t-name">الهدف: المغرب</div>
-    <div class="timer-display" id="t-main">00:00:00</div>
-    <div style="font-size:0.82rem;color:var(--muted);margin-top:3px" id="t-sub">💪 استمر!</div>
-    <div class="prog-labels mt-8"><span>الفجر</span><span>المغرب</span></div>
-    <div class="prog-track"><div class="prog-fill" id="p-fill" style="width:0%"></div><div class="prog-marker" id="p-marker" style="right:50%"></div></div>
-  </div>
-  <div id="bonus-card" class="status-card status-success hidden flex" style="align-items:center;gap:12px">
-    <div style="flex:1"><div class="bold text-sm">🌟 بونص حتى المغرب!</div><div id="bonus-timer" class="text-sm" style="color:var(--teal)">00:00:00</div></div>
-    <button class="btn btn-success btn-sm" id="btn-maghrib">اطلب المكافأة!</button>
-  </div>
-  <div class="quiz-banner">
-    <div style="flex:1"><div class="bold">🧠 مسابقة اليوم</div><div class="text-xs text-muted" id="quiz-banner-sub">10 أسئلة رمضانية</div></div>
-    <button class="btn btn-primary btn-sm" id="btn-quiz">ابدأ!</button>
-  </div>
-
-  <div id="child-rewards-card" class="card mt-12 hidden">
-    <div class="section-hdr"><div class="section-title">🎁 هدايا الوالد</div><div class="badge" id="child-rew-badge">0</div></div>
-    <div id="child-rewards-list"></div>
-  </div>
-
-  <div id="home-inventory-card" class="card mt-12">
-    <div class="section-hdr">
-      <div class="section-title">🧺 مقتنياتي</div>
-      <button class="btn btn-ghost btn-sm" id="btn-go-shop">إلى المتجر</button>
-    </div>
-    <div id="inv-strip"></div>
-  </div>
-  <div class="section-hdr"><div class="section-title">🌟 أعمالي الحسنة</div><div class="badge">+نقاط</div></div>
-  <div class="deeds-grid" id="deeds-grid"></div>
-  <div id="bad-deeds-section" class="hidden">
-    <div class="section-hdr mt-12"><div class="section-title" style="color:var(--rose)">⚠️ ملاحظات الوالدين</div></div>
-    <div id="bad-deeds-list"></div>
-  </div>
-  <div class="section-hdr mt-8"><div class="section-title">📋 مهام اليوم</div><div class="badge" id="q-badge">0/7</div></div>
-  <div id="quest-list"></div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px">
-    <button class="btn btn-ghost btn-sm" id="btn-night">🌙 المظهر</button>
-    <button class="btn btn-ghost btn-sm" id="btn-cert-home">🏅 شهادتي</button>
-  </div>
-</div>
-
-<!-- ===== PROGRESS ===== -->
-<div id="screen-progress" class="screen">
-  <div class="screen-title">🗺️ رحلتي في رمضان</div>
-
-  <!-- Stats bar -->
-  <div class="xp-bar-wrap"><div class="xp-header"><span class="bold">مستواك</span><span class="level-badge" id="pr-level">مبتدئ 🌱</span></div><div class="xp-track"><div class="xp-fill" id="pr-xp" style="width:0%"></div></div><div class="text-xs text-muted mt-8" id="pr-xp-lbl">0 / 200 نقطة</div></div>
-  <div class="stats-grid" style="margin-bottom:16px">
-    <div class="stat-card"><div class="stat-val" id="st-pts">0</div><div class="stat-lbl">مجموع النقاط</div></div>
-    <div class="stat-card"><div class="stat-val" id="st-streak">0🔥</div><div class="stat-lbl">أيام متتالية</div></div>
-    <div class="stat-card"><div class="stat-val" id="st-days">0</div><div class="stat-lbl">أيام ناجحة</div></div>
-    <div class="stat-card"><div class="stat-val" id="st-grace">3</div><div class="stat-lbl">درع الحماية</div></div>
-  </div>
-
-  <!-- ====== JOURNEY (levels) ====== -->
-  <div class="section-hdr"><div class="section-title">🗺️ مسيرة المغامرة</div></div>
-  <div id="journey-list"></div>
-
-  <!-- Achievements -->
-  <div class="section-hdr mt-12"><div class="section-title">🏅 الأوسمة</div></div>
-  <div class="ach-grid" id="ach-grid"></div>
-  <div class="section-hdr mt-12"><div class="section-title">📋 سجل الأعمال</div></div>
-  <div id="activity-log"></div>
-</div>
-
-<!-- ===== SHOP ===== -->
-<div id="screen-shop" class="screen">
-  <div class="screen-title">🏪 المتجر</div>
-  <div style="background:linear-gradient(135deg,rgba(56,201,176,0.15),rgba(240,180,41,0.1));border:1.5px solid var(--teal);border-radius:13px;padding:10px 14px;text-align:center;margin-bottom:12px">
-    <div class="text-xs text-muted mb-8">المتجر يستخدم 💎 الجواهر فقط — نقاط التنافس لا تتأثر</div>
-    <span style="font-size:1.4rem">💎</span> <span class="bold" style="font-size:1.3rem;color:var(--teal)" id="shop-gems">0</span> <span class="text-muted text-sm">جوهرة</span>
-    <span style="margin-right:12px" class="text-xs text-muted">| نقاط التنافس: <span class="text-accent bold" id="shop-comp-pts">0</span></span>
-  </div>
-  <div class="shop-grid" id="shop-grid"></div>
-</div>
-
-<!-- ===== PROFILES / FAMILY ===== -->
-<div id="screen-profiles" class="screen">
-  <div class="screen-title">🏆 ترتيب العائلة</div>
-  <p class="text-xs text-muted text-center mb-12">نقاط جميع أفراد العائلة</p>
-  <div id="profiles-list"></div>
-  <p class="text-xs text-muted text-center mt-12" style="opacity:0.6">تنافس ودي — حظ موفق للجميع 🏠</p>
-</div>
-
-<!-- ===== QUIZ ===== -->
-<div id="screen-quiz" class="screen">
-  <div class="flex gap-8 mb-12"><button class="btn btn-ghost btn-sm" id="btn-quiz-back">← رجوع</button><div class="screen-title" style="flex:1;margin:0">🧠 مسابقة رمضان</div></div>
-  <!-- 29-day quiz path map — shown before quiz starts -->
-  <div id="quiz-path-map"></div>
-  <div id="quiz-container" style="display:none"></div>
-</div>
-
-<!-- ===== CERTIFICATE ===== -->
-<div id="screen-certificate" class="screen">
-  <div class="flex gap-8 mb-12"><button class="btn btn-ghost btn-sm" id="btn-cert-back">← رجوع</button><button class="btn btn-secondary btn-sm" onclick="window.print()">🖨️ طباعة</button></div>
-  <div class="screen-title">📜 شهادة التقدير</div>
-  <div class="cert-frame">
-    <!-- FIX: بسم الله at TOP -->
-    <div style="font-family:'Amiri',serif;font-size:1.1rem;color:var(--accent);font-weight:700;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid rgba(240,180,41,0.3)">بِسْمِ اللهِ الرَّحْمَنِ الرَّحِيم 🤲</div>
-    <div style="font-size:2.3rem;margin-bottom:6px">🌙</div>
-    <div style="font-family:'Amiri',serif;font-size:1.2rem;color:var(--accent);font-weight:700;margin-bottom:6px">شهادة صائم صغير متميز</div>
-    <div style="font-size:2.8rem;margin:6px 0" id="cert-av">🌙</div>
-    <div class="cert-name" id="cert-name">—</div>
-    <div style="display:inline-block;background:rgba(240,180,41,0.15);border:1px solid var(--accent);color:var(--accent);padding:3px 13px;border-radius:18px;font-size:0.82rem;margin:5px 0" id="cert-level">—</div>
-    <div style="margin:8px 0 10px;font-size:1.05rem;font-weight:900;color:var(--accent)" id="cert-msg">أتم بنجاح صوم شهر رمضان المبارك 1447 هـ</div>
-    <div class="cert-row"><div><span id="cert-pts">0</span> نقطة</div></div>
-    <div class="text-xs text-muted" id="cert-date"></div>
-  </div>
-  <div class="card mt-12"><div class="section-title mb-8">🏆 ترتيب العائلة</div><div id="cert-ranks"></div></div>
-</div>
-
-<!-- ===== PARENT ===== -->
-<div id="screen-parent" class="screen">
-  <div class="flex gap-8 mb-12"><button class="btn btn-ghost btn-sm" id="btn-parent-back">← رجوع</button><div class="screen-title" style="flex:1;margin:0">لوحة الوالدين 🔒</div></div>
-
-  <!-- FIRST TIME: Create PIN -->
-  <div id="parent-create-pin" class="parent-lock hidden">
-    <div style="font-size:3.5rem">🔐</div>
-    <h3 style="margin:0 0 6px">إنشاء رقم سري للوالدين</h3>
-    <p class="text-muted text-sm" style="margin:0 0 16px;max-width:260px;text-align:center">هذا الرقم يُحفظ على جهازك فقط ولا يراه الأطفال</p>
-    <input type="password" id="pin-create-1" placeholder="أدخل رقماً سرياً (4+ أرقام)" inputmode="numeric" maxlength="8"
-      style="max-width:220px;text-align:center;font-size:1.5rem;letter-spacing:6px;margin-bottom:10px">
-    <input type="password" id="pin-create-2" placeholder="أعد الإدخال للتأكيد" inputmode="numeric" maxlength="8"
-      style="max-width:220px;text-align:center;font-size:1.5rem;letter-spacing:6px;margin-bottom:14px">
-    <button class="btn btn-primary" id="btn-save-pin">💾 حفظ الرقم السري</button>
-  </div>
-
-  <!-- RETURNING: Enter PIN -->
-  <div id="parent-lock" class="parent-lock hidden">
-    <div style="font-size:3.5rem">🔑</div>
-    <h3 style="margin:0 0 6px">أدخل الرقم السري</h3>
-    <p class="text-muted text-sm" style="margin:0 0 16px">للوالدين فقط</p>
-    <input type="password" id="math-ans" placeholder="••••" inputmode="numeric" maxlength="8"
-      style="max-width:180px;text-align:center;font-size:1.8rem;letter-spacing:8px">
-    <button class="btn btn-primary" id="btn-pin">دخول ←</button>
-    <button class="btn btn-ghost btn-sm" id="btn-forgot-pin" style="margin-top:8px;font-size:0.8rem">نسيت الرقم؟ (إعادة ضبط)</button>
-  </div>
-  <div id="parent-panel" class="hidden flex-col gap-10">
-    <!-- Tabs: 3 per row, 2 rows -->
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px">
-      <button class="ptab-btn active" data-tab="children" id="ptab-children">👶<br><span>الأطفال</span></button>
-      <button class="ptab-btn" data-tab="deeds" id="ptab-deeds">✅<br><span>الأعمال</span></button>
-      <button class="ptab-btn" data-tab="fasting" id="ptab-fasting">📋<br><span>الصيام</span></button>
-      <button class="ptab-btn" data-tab="questions" id="ptab-questions">🧠<br><span>الأسئلة</span></button>
-      <button class="ptab-btn" data-tab="rewards" id="ptab-rewards">🎁<br><span>المكافآت</span></button>
-      <button class="ptab-btn" data-tab="settings" id="ptab-settings">⚙️<br><span>الإعدادات</span></button>
-    </div>
-    <!-- Children tab -->
-    <div id="ptab-children-content">
-      <div id="parent-children-list"></div>
-      <div class="card mt-8">
-        <div class="bold mb-8">🔗 رمز الربط بالعائلة</div>
-        <p class="text-sm text-muted mb-8">أعطِ هذا الرمز لأي طفل ليدخل من جهازه</p>
-        <div style="font-size:2rem;font-weight:900;color:var(--accent);text-align:center;letter-spacing:6px;background:var(--surf);border-radius:12px;padding:12px" id="family-code">——</div>
-        <div id="supabase-status" style="text-align:center;font-size:0.75rem;margin:8px 0;padding:6px;border-radius:8px;background:var(--surf2)">
-          ⏳ جارٍ التحقق من الاتصال...
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px">
-          <button class="btn btn-ghost btn-sm" id="btn-regen-code">🔄 رمز جديد</button>
-          <button class="btn btn-primary btn-sm" id="btn-test-conn">📡 اختبار الاتصال</button>
-        </div>
-      </div>
-    </div>
-    <!-- Deeds/Log tab -->
-    <div id="ptab-deeds-content" class="hidden">
-      <div class="card">
-        <div class="bold mb-8">⚠️ إضافة ملاحظة سلبية</div>
-        <select id="bad-deed-select" style="margin-bottom:7px"><option value="">اختر السلوك...</option></select>
-        <select id="bad-deed-child" style="margin-bottom:7px"><option value="">اختر الطفل...</option></select>
-        <button class="btn btn-danger btn-block btn-sm" id="btn-add-bad">➕ إضافة الملاحظة</button>
-      </div>
-      <div class="card mt-8">
-        <div class="bold mb-8">✅ طلبات الأعمال الحسنة</div>
-        <div id="pending-deeds-list"><p class="text-muted text-sm text-center">لا توجد طلبات معلقة</p></div>
-      </div>
-      <div class="card mt-8">
-        <div class="flex gap-8 mb-8"><div class="bold" style="flex:1">📋 سجل الأعمال</div><select id="log-filter-child" style="width:auto;padding:4px 8px;font-size:0.8rem"><option value="">الكل</option></select></div>
-        <div id="parent-log-list"></div>
-      </div>
-      <div class="card mt-8">
-        <div class="bold mb-8">✏️ تعديل نقاط</div>
-        <select id="edit-pts-child" style="margin-bottom:6px"><option value="">اختر الطفل...</option></select>
-        <div class="flex gap-6">
-          <input type="number" id="edit-pts-val" placeholder="عدد النقاط..." style="flex:1">
-          <button class="btn btn-success btn-sm" id="btn-add-pts">+ إضافة</button>
-          <button class="btn btn-danger btn-sm" id="btn-rem-pts">- خصم</button>
-        </div>
-      </div>
-      <div class="card mt-8">
-        <div class="bold mb-8">💎 منح جواهر</div>
-        <p class="text-xs text-muted mb-8">الجواهر تُستخدم في المتجر ولا تؤثر على نقاط التنافس</p>
-        <select id="edit-gems-child" style="margin-bottom:6px"><option value="">اختر الطفل...</option></select>
-        <div class="flex gap-6">
-          <input type="number" id="edit-gems-val" placeholder="عدد الجواهر..." style="flex:1" min="1">
-          <button class="btn btn-primary btn-sm" id="btn-add-gems">💎 منح</button>
-          <button class="btn btn-danger btn-sm" id="btn-rem-gems">- خصم</button>
-        </div>
-      </div>
-    </div>
-    <!-- Questions tab -->
-    <div id="ptab-fasting-content" class="hidden">
-            <div class="card">
-        <div class="bold mb-8">🕌 متابعة الصيام</div>
-        <select id="fasting-child-select" style="margin-bottom:8px"><option value="">اختر الطفل...</option></select>
-        <div class="grid2" style="gap:8px;margin-bottom:8px">
-          <button class="btn btn-ghost btn-sm" data-fasting-reason="completed">✅ أكمل</button>
-          <button class="btn btn-ghost btn-sm" data-fasting-reason="forgot">😅 نسيان</button>
-          <button class="btn btn-ghost btn-sm" data-fasting-reason="tired">😴 تعب</button>
-          <button class="btn btn-ghost btn-sm" data-fasting-reason="sick">🤒 مريض</button>
-          <button class="btn btn-ghost btn-sm" data-fasting-reason="intentional">😞 متعمد</button>
-        </div>
-        <button class="btn btn-primary btn-block btn-sm" id="btn-update-fasting">💾 تحديث الحالة</button>
-        <p class="text-xs text-muted mt-8">يعرض آخر 30 يوم لكل طفل</p>
-      </div>
-      <div class="card mt-8">
-        <div class="bold mb-8">📅 آخر 30 يوم</div>
-        <div id="fasting-log-list"><p class="text-muted text-sm text-center">اختر طفلاً أولاً</p></div>
-      </div>
-    </div>
-    <!-- Questions tab -->
-    <div id="ptab-questions-content" class="hidden">
-      <div class="card">
-        <div class="bold mb-8">➕ إضافة سؤال مخصص</div>
-        <input type="text" id="cq-q" placeholder="نص السؤال..." maxlength="200" style="margin-bottom:6px">
-        <div class="grid2" style="gap:6px;margin-bottom:6px">
-          <input type="text" id="cq-a" placeholder="خيار 1"><input type="text" id="cq-b" placeholder="خيار 2">
-          <input type="text" id="cq-c" placeholder="خيار 3"><input type="text" id="cq-d" placeholder="خيار 4">
-        </div>
-        <select id="cq-correct" style="margin-bottom:6px">
-          <option value="0">✅ الإجابة الصحيحة: خيار 1</option><option value="1">✅ الإجابة الصحيحة: خيار 2</option>
-          <option value="2">✅ الإجابة الصحيحة: خيار 3</option><option value="3">✅ الإجابة الصحيحة: خيار 4</option>
-        </select>
-        <div class="flex gap-6">
-          <select id="cq-diff" style="flex:1"><option value="easy">سهل (+10)</option><option value="medium">متوسط (+15)</option><option value="hard">صعب (+25)</option></select>
-          <button class="btn btn-primary btn-sm" id="btn-add-cq">➕ إضافة</button>
-        </div>
-      </div>
-      <div class="card mt-8">
-        <div class="flex gap-8 mb-8">
-          <div class="bold" style="flex:1">📚 الأسئلة المخصصة (<span id="cq-count">0</span>)</div>
-          <input type="text" id="cq-search" placeholder="بحث..." style="width:130px;padding:5px 8px;font-size:0.8rem">
-        </div>
-        <div id="cq-list"></div>
-      </div>
-
-      <!-- Full 300 questions editor -->
-      <div class="card mb-8">
-        <div class="bold mb-8" style="font-size:1rem">📋 الأسئلة الكاملة (300 سؤال)</div>
-        <p class="text-xs text-muted mb-10">يمكنك تعديل أي سؤال أو حذفه. التعديلات تؤثر على جميع الأجهزة.</p>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
-          <input type="text" id="allq-search" placeholder="🔍 ابحث في الأسئلة..." style="flex:1;min-width:150px">
-          <select id="allq-cat" style="min-width:110px">
-            <option value="">جميع الفئات</option>
-          </select>
-          <select id="allq-diff" style="min-width:100px">
-            <option value="">جميع المستويات</option>
-            <option value="easy">سهل 🟢</option>
-            <option value="medium">متوسط 🟡</option>
-            <option value="hard">صعب 🔴</option>
-          </select>
-        </div>
-        <div id="allq-stats" class="text-xs text-muted mb-8"></div>
-        <div id="allq-list" style="max-height:60vh;overflow-y:auto;display:flex;flex-direction:column;gap:8px"></div>
-      </div>
-
-      <!-- Edit modal inside tab -->
-      <div id="allq-edit-panel" class="hidden card" style="border:2px solid var(--accent);margin-bottom:8px">
-        <div class="bold mb-8">✏️ تعديل السؤال</div>
-        <textarea id="allq-edit-q" rows="3" style="width:100%;margin-bottom:6px;font-family:var(--font);padding:8px;border-radius:8px;border:1px solid var(--bdr);background:var(--surf);color:var(--text)"></textarea>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px">
-          <input type="text" id="allq-edit-o0" placeholder="خيار 1">
-          <input type="text" id="allq-edit-o1" placeholder="خيار 2">
-          <input type="text" id="allq-edit-o2" placeholder="خيار 3">
-          <input type="text" id="allq-edit-o3" placeholder="خيار 4">
-        </div>
-        <div style="display:flex;gap:8px;margin-bottom:8px">
-          <select id="allq-edit-correct" style="flex:1">
-            <option value="0">✅ الصحيح: خيار 1</option>
-            <option value="1">✅ الصحيح: خيار 2</option>
-            <option value="2">✅ الصحيح: خيار 3</option>
-            <option value="3">✅ الصحيح: خيار 4</option>
-          </select>
-          <select id="allq-edit-diff" style="flex:1">
-            <option value="easy">سهل (+10)</option>
-            <option value="medium">متوسط (+15)</option>
-            <option value="hard">صعب (+25)</option>
-          </select>
-        </div>
-        <div style="display:flex;gap:8px">
-          <button class="btn btn-primary btn-sm" id="allq-save-edit" style="flex:1">💾 حفظ</button>
-          <button class="btn btn-ghost btn-sm" id="allq-cancel-edit" style="flex:1">✕ إلغاء</button>
-        </div>
-      </div>
-</div>
-    <!-- Rewards tab -->
-    <div id="ptab-rewards-content" class="hidden">
-      <div class="card">
-        <div class="bold mb-8">🎁 إضافة مكافأة</div>
-        <select id="rew-child" style="margin-bottom:6px"><option value="">اختر الطفل...</option></select>
-        <div id="rew-presets" style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:8px"></div>
-        <input type="text" id="rew-desc" placeholder="سبب المكافأة (مثال: لأنه أكمل هدف اليوم)" style="margin-bottom:6px">
-        <div class="text-xs text-muted" style="margin:-2px 0 8px">كل هدية تعطي ⭐ +10 و 💎 +3 (تلقائياً)</div>
-        <button class="btn btn-success btn-block btn-sm" id="btn-add-rew">🎁 إضافة المكافأة</button>
-      </div>
-      <div class="card mt-8">
-        <div class="bold mb-8">🏆 المكافآت الممنوحة</div>
-        <div id="rewards-list"><p class="text-muted text-sm text-center">لا توجد مكافآت بعد</p></div>
-      </div>
-    </div>
-    <!-- Settings tab -->
-    <div id="ptab-settings-content" class="hidden">
-      <div class="card"><div class="bold mb-8">🎨 المظهر</div><div class="theme-grid" id="theme-grid-parent"></div></div>
-      
-      <div class="card mt-8"><div class="bold mb-8">⚠️ خيارات متقدمة</div><button class="btn btn-danger btn-block" id="btn-reset">🔄 إعادة تعيين الشهر</button></div>
-      <div class="card mt-8">
-        <div class="bold mb-8">🌙 إنهاء رمضان (بعد المغرب يوم 29)</div>
-        <div class="grid2 gap-8">
-          <button class="btn btn-primary btn-sm" id="btn-end-ramadan-29">🎉 العيد غداً (29 يوم)</button>
-          <button class="btn btn-ghost btn-sm" id="btn-continue-30">📅 استمرار ليوم 30</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ===== THEME PREVIEW ===== -->
-<div id="screen-themes" class="screen">
-  <div class="flex gap-8 mb-12"><button class="btn btn-ghost btn-sm" id="btn-themes-back">← رجوع</button><div class="screen-title" style="flex:1;margin:0">🎨 اختر المظهر</div></div>
-  <div class="theme-grid mb-12" id="theme-grid-main"></div>
-  <div class="bold mb-8 text-center">معاينة المظهر الحالي</div>
-  <div class="theme-preview">
-    <div class="theme-preview-title">أمثلة على العناصر</div>
-    <div class="preview-row">
-      <button class="btn btn-primary btn-sm">زر رئيسي</button>
-      <button class="btn btn-secondary btn-sm">زر ثانوي</button>
-      <button class="btn btn-ghost btn-sm">زر فارغ</button>
-      <button class="btn btn-danger btn-sm">تحذير</button>
-    </div>
-    <div class="preview-row">
-      <span class="badge">وسام</span>
-      <span style="background:var(--green);color:#fff;padding:3px 10px;border-radius:10px;font-size:0.75rem;font-weight:700">نجاح</span>
-      <span style="background:var(--rose);color:#fff;padding:3px 10px;border-radius:10px;font-size:0.75rem;font-weight:700">تنبيه</span>
-    </div>
-    <div class="card" style="margin-top:8px">
-      <div class="bold text-sm">بطاقة معلومات</div>
-      <div class="text-muted text-xs mt-8">هذا نص توضيحي داخل البطاقة</div>
-      <button class="btn btn-primary btn-sm mt-8" style="width:100%">زر داخل البطاقة</button>
-    </div>
-    <div style="background:rgba(82,214,138,0.12);border:1px solid var(--green);border-radius:11px;padding:9px 12px;margin-top:8px;font-size:0.85rem;color:var(--green);font-weight:700">✅ رسالة نجاح</div>
-    <div style="background:rgba(232,93,117,0.12);border:1px solid var(--rose);border-radius:11px;padding:9px 12px;margin-top:8px;font-size:0.85rem;color:var(--rose);font-weight:700">⚠️ رسالة تحذير</div>
-  </div>
-</div>
-
-</div><!-- /app -->
-
-<!-- ===== NAV ===== -->
-<nav id="nav">
-  <button class="nav-btn" data-s="home" id="nav-home"><span class="nav-i">🏠</span><span>الرئيسية</span></button>
-  <button class="nav-btn" data-s="progress" id="nav-progress"><span class="nav-i">🗺️</span><span>رحلتي</span></button>
-  <button class="nav-btn" data-s="shop" id="nav-shop"><span class="nav-i">🏪</span><span>المتجر</span></button>
-  <button class="nav-btn" data-s="profiles" id="nav-profiles"><span class="nav-i">👥</span><span>العائلة</span></button>
-  <button class="nav-btn" data-s="themes" id="nav-themes"><span class="nav-i">🎨</span><span>المظهر</span></button>
-</nav>
-
-<!-- ===== MODALS ===== -->
-<div id="m-theme" class="overlay hidden"><div class="sheet"><div class="sheet-handle"></div><div class="modal-title">🎨 اختر المظهر</div><div class="theme-grid" id="theme-grid-modal"></div><button class="btn btn-primary btn-block mt-12" id="btn-close-theme">✓ حفظ</button></div></div>
-<div id="m-ate" class="overlay hidden"><div class="sheet"><div class="sheet-handle"></div><div class="modal-title">💔 ماذا حدث؟</div>
-  <div class="flex-col gap-8">
-    <button class="btn btn-ghost btn-block" data-r="sick">🤒 كنت مريضاً (لا خصم + نقاط جزئية)</button>
-    <button class="btn btn-ghost btn-block" data-r="tired">😴 تعبت (نقاط جزئية)</button>
-    <button class="btn btn-ghost btn-block" data-r="forgot">😅 نسيت (بدون خصم)</button>
-    <button class="btn btn-ghost btn-block" data-r="intentional">😞 قررت ذلك (خصم النقاط)</button>
-  </div>
-  <button class="btn btn-ghost btn-block mt-10" id="btn-cancel-ate">إلغاء</button>
-</div></div>
-<div id="m-chest" class="overlay center hidden"><div class="sheet center-sheet" style="max-width:320px;text-align:center"><div style="font-size:3.5rem">🎁</div><div class="modal-title mt-8">صندوق المكافأة!</div><div id="chest-msg" class="text-muted mb-12">مكافأة!</div><button class="btn btn-primary btn-block" id="btn-close-chest">🎉 رائع!</button></div></div>
-<div id="m-eid-q" class="overlay center hidden"><div class="sheet center-sheet"><div style="font-size:3.5rem;text-align:center">🌙✨</div><div class="modal-title">هلال العيد</div><p style="text-align:center;margin-bottom:18px">هل أُعلن أن غداً أول أيام عيد الفطر؟</p><div class="grid2 gap-10"><button class="btn btn-primary" style="padding:14px" id="btn-eid-yes">🎉 نعم! العيد غداً</button><button class="btn btn-ghost" style="padding:14px" id="btn-eid-no">📅 لا، نكمل الثلاثين</button></div></div></div>
-<div id="m-eid-cel" class="overlay center hidden"><div class="sheet center-sheet"><div class="eid-wrap"><div style="font-size:4rem;animation:float 2s ease-in-out infinite">🌙</div><h1 style="font-size:2rem;color:var(--accent);font-family:'Amiri',serif;margin:12px 0">عيد مبارك</h1><p style="color:var(--teal);font-size:1.2rem;margin-bottom:6px">وكل عام وأنتم بخير 🎊</p><div class="winner-card"><div style="font-size:1.6rem">🏆</div><div class="bold text-accent">بطل رمضان</div><div id="win-av" style="font-size:2.8rem;margin:6px 0">🌙</div><div id="win-name" style="font-size:1.4rem;font-weight:900">—</div><div id="win-pts" style="color:var(--teal)">0 نقطة</div></div><div class="flex-col gap-8 mt-12"><button class="btn btn-primary btn-block" id="btn-eid-cert">📜 شهادتي</button><button class="btn btn-ghost btn-block" id="btn-eid-close">إغلاق</button></div></div></div></div>
-
-<!-- ===== TOAST ===== -->
-<!-- FAMILY CODE MODAL -->
-<div id="toast"></div>
-
-<script src="app.js" defer></script>
-</body>
-</html>
